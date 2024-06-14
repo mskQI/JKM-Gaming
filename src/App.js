@@ -2,6 +2,9 @@ import React, {useContext, useEffect, useState} from 'react';
 import './App.css';
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 import {createRoom, addPlayerToRoom, removePlayerFromRoom, GetRooms, subscribeToRooms} from "./firebaseUtils";
+import { Card } from 'react-bootstrap';
+import Table from 'react-bootstrap/Table';
+import Button from 'react-bootstrap';
 
 const App = () => {
     
@@ -26,7 +29,8 @@ const App = () => {
     };
   
     const handleAddPlayer = () => {
-      addPlayerToRoom("2jqmPF7MyhvgBXioqsFm")
+
+      addPlayerToRoom(roomId)
         .catch(error => console.error('Error adding player:', error));
     };
   
@@ -42,7 +46,13 @@ const App = () => {
        // alert(rooms);
     }
    
-    const roomList = rooms.map((room, index)=> <h3 key={index}>{room.name}:{room.players}</h3>)
+    const roomList = rooms.map((room, index)=>
+        <tr key={index}>
+          <td>{room.name}</td>
+          <td>{room.maxPlayers}</td>
+          <td>{room.players}</td>
+        </tr>
+    );
 
 
     return (
@@ -59,7 +69,20 @@ const App = () => {
                 <button onClick={handleRemovePlayer}>Remove Player</button>
                 <button onClick={handleGetRooms}>Get rooms</button>
             </div>
-            <div>{rooms.length}{roomList}
+            <div>
+              
+            <Table striped bordered hover>
+                <thead>
+                  <tr>
+                    <th>name</th>
+                    <th>max players</th>
+                    <th>players</th>
+                  </tr>
+                </thead>
+                <tbody>
+                {roomList}
+                </tbody>
+            </Table>
              
             </div>
         </div>
