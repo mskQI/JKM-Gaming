@@ -1,11 +1,8 @@
 // src/firebaseUtils.js
 import { db } from './firebaseConfig';
 import {getDocs, addDoc, deleteDoc, doc, collection, updateDoc, increment,onSnapshot } from 'firebase/firestore';
-import { useState } from 'react';
-
 
 const roomRef = collection(db, "Rooms");
-
 
 // Function to subscribe to room updates
 const subscribeToRooms = (callback) => {
@@ -19,9 +16,6 @@ const subscribeToRooms = (callback) => {
     });
 };
 
-
-
-//test
 const GetRooms = async () => {
     const snapshot = await getDocs(roomRef);
     const rooms = [];
