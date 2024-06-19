@@ -1,19 +1,19 @@
 import React, {useContext, useEffect, useState} from 'react';
 import './App.css';
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
-import {createRoom, addPlayerToRoom, removePlayerFromRoom, GetRooms, subscribeToRooms} from "./firebaseUtils";
 import { Card } from 'react-bootstrap';
 import Table from 'react-bootstrap/Table';
 import Button from 'react-bootstrap';
+import MainPage from './Components/MainPage';
+import {createRoom, addPlayerToRoom, removePlayerFromRoom, GetRooms, subscribeToRooms} from "./firebaseUtils";
 
 const App = () => {
-    
     const [rooms, setRooms] = useState([]);
     const [roomName, setRoomName] = useState('');
     const [maxPlayers, setMaxPlayers] = useState(0);
     const [roomId, setRoomId] = useState('');
     const [player, setPlayer] = useState({ playerId: '', playerName: '' });
-  
+
     useEffect(() => {
         // Subscribe to room updates
         const unsubscribe = subscribeToRooms(setRooms);
@@ -27,13 +27,12 @@ const App = () => {
         .then(id => setRoomId(id))
         .catch(error => console.error('Error creating room:', error));
     };
-  
-    const handleAddPlayer = () => {
 
-      addPlayerToRoom(roomId)
+    const handleAddPlayer = () => {
+      addPlayerToRoom("2jqmPF7MyhvgBXioqsFm")
         .catch(error => console.error('Error adding player:', error));
     };
-  
+
     const handleRemovePlayer = () => {
       removePlayerFromRoom("2jqmPF7MyhvgBXioqsFm")
         .catch(error => console.error('Error removing player:', error));
@@ -41,11 +40,11 @@ const App = () => {
     const handleGetRooms = async () => {
         const roomArray  = await GetRooms();
         setRooms(roomArray);
-        console.log("lenght is: "+roomArray)
+        console.log("lenght is: " + roomArray)
         
        // alert(rooms);
     }
-   
+
     const roomList = rooms.map((room, index)=>
         <tr key={index}>
           <td>{room.name}</td>
@@ -57,7 +56,7 @@ const App = () => {
 
     return (
         <div className="App">
-            {/* <MainPage /> */}           
+             {/* <MainPage /> */}          
              <div>
                 <h1>Create Room</h1>
                 <input value={roomName} onChange={e => setRoomName(e.target.value)} placeholder="Room Name" />
@@ -83,7 +82,7 @@ const App = () => {
                 {roomList}
                 </tbody>
             </Table>
-             
+            
             </div>
         </div>
     );

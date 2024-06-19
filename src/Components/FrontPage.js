@@ -193,9 +193,9 @@ const FrontPage = ({ onStartGame }) => {
                    <div>
                         <select style={styles.button} onChange={(e) => setSelectedOption(e.target.value)} value={selectedOption}>
                             <option value="Quick match">Quick match</option>
-                            <option value="Option1">2v2</option>
-                            <option value="Option2">3v3</option>
-                            <option value="Option3">5v5</option>
+                            <option value="Option1">join</option>
+                            <option value="option2">create</option>
+                            <option value="Option3">join</option>
                         </select>
                         <button style={styles.button} onClick={handleStartGame}>Play</button>
                     </div>

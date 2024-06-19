@@ -1,11 +1,20 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import NewFrontPage from './NewFrontPage';
 import { Unity, useUnityContext } from 'react-unity-webgl';
+import FrontPage from './FrontPage';
 
 const MainPage = () => {
     const [showUnity, setShowUnity] = useState(false);
     const [selectedOption, setSelectedOption] = useState('');
     const [unityMessage, setUnityMessage] = useState('');
+
+
+    const [matchId, setMatchId] = useState("Room1");
+    const [matchId2, setMatchId2] = useState("Room1's Match");
+    const [username, setUsername] = useState("Player1");      
+    const [username2, setUsername2] = useState("Player2");    
+    const [playerCount, setPlayerCount] = useState(2);
+
 
     const { unityProvider, sendMessage, addEventListener, removeEventListener, isLoaded } = useUnityContext({
         loaderUrl: "Build/WebGL_Builds.loader.js",
@@ -14,10 +23,13 @@ const MainPage = () => {
         codeUrl: "Build/WebGL_Builds.wasm",
     });
 
+
     const handleStartGame = (option) => {
         setSelectedOption(option);
         setShowUnity(true);
+        //console.log(JSON.stringify({ matchId, username, playerCount }));
     };
+
 
     const handleUnityMessage = useCallback((message) => {
         setUnityMessage(message);
@@ -25,11 +37,14 @@ const MainPage = () => {
         // Handle the message as needed
     }, []);
 
+
     const handleHideUnity = useCallback(() => {
         setShowUnity(false);
         setUnityMessage('');
         console.log("Unity component hidden");
+        //handleSendMessage();
     }, []);
+
 
     useEffect(() => {
         if (isLoaded && selectedOption) {
@@ -37,9 +52,11 @@ const MainPage = () => {
         }
     }, [isLoaded, selectedOption]);
 
+
     useEffect(() => {
         window.EndUnityGame = handleHideUnity; // Make the function globally accessible
         addEventListener("ReactFunction", handleUnityMessage);
+
 
         return () => {
             removeEventListener("ReactFunction", handleUnityMessage);
@@ -47,34 +64,44 @@ const MainPage = () => {
         };
     }, [addEventListener, removeEventListener, handleUnityMessage, handleHideUnity]);
 
+
     function handleChoosePlayerMode(option) {
         switch (option) {
             case 'Option1':
-                sendMessage("ReactCommunicator", "ChoosePlayerMode", 4);
+                sendMessage("MatchMakingManager", "JoinMatch", JSON.stringify({ matchId2, username2 }));
                 break;
             case 'Option2':
-                sendMessage("ReactCommunicator", "ChoosePlayerMode", 6);
+                sendMessage("MatchMakingManager", "CreateMatch", JSON.stringify({ matchId, username, playerCount }));
                 break;
             case 'Option3':
-                sendMessage("ReactCommunicator", "ChoosePlayerMode", 10);
+                sendMessage("MatchMakingManager", "JoinMatch", JSON.stringify({ matchId2, username2 }));
                 break;
             default:
-                sendMessage("ReactCommunicator", "ShowMessage", 2);
+                sendMessage("MatchMakingManager", "JoinMatch", JSON.stringify({ matchId2, username2 }));
         }
     }
 
-    function handleSendMessage() {
-        sendMessage("ReactCommunicator", "ShowMessage", "something that is a string!");
-    }
+
+ /*   function handleSendMessage() {
+        // Get the Unity instance
+        var unityInstance = document.querySelector("canvas").unityInstance;
+
+
+        // Send a test message to Unity
+        unityInstance.SendMessage("MatchMakingManager", "TestCreateMatch");
+        unityInstance.SendMessage("MatchMakingManager", "TestJoinMatch");
+    }*/
+
 
     return (
         <div>
             {showUnity ? (
                 <Unity unityProvider={unityProvider} style={{ width: "100%", height: "100vh" }} />) : (
-                <NewFrontPage onStartGame={handleStartGame} />
+                <FrontPage onStartGame={handleStartGame} />
                 )}
         </div>
     );
 };
+
 
 export default MainPage;
